@@ -17,15 +17,21 @@ export default function Dashboard() {
   useEffect(() => {
     async function fetchRiskData() {
       try {
+        console.log('Fetching risk data from Supabase...');
         const { data, error } = await supabase
           .from('risk_events')
           .select('timestamp, risk_score')
           .order('timestamp', { ascending: true });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
 
+        console.log('Data received from Supabase:', data);
         setRiskData(data || []);
       } catch (err) {
+        console.error('Error fetching data:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
